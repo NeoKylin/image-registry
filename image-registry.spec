@@ -47,33 +47,27 @@
 #
 
 %global golang_version 1.8.1
-%{!?version: %global version 3.9.0}
+%{!?version: %global version 0.0.1}
 %{!?release: %global release 1}
 %global package_name origin-dockerregistry
 %global product_name OpenShift Docker Registry
-%global import_path 10.1.60.22/NCCP/image-registry.git
+%global import_path github.com/openshift/image-registry
 
 Name:           %{package_name}
 Version:        %{version}
-Release:        %{release}%{?dist}.01
+Release:        %{release}%{?dist}
 Summary:        TODO
 License:        ASL 2.0
-URL:            http://%{import_path}
+URL:            https://%{import_path}
 
-#Source0:        https://%{import_path}/archive/%{commit}/%{name}-%{version}.tar.gz
-Source0:        %{name}-%{version}.tar.gz
-
-# cs2c add
-Patch1:         0001-%{name}-%{version}-cs2c-fix-for-mips.patch
-# cs2c add end
-
+Source0:        https://%{import_path}/archive/%{commit}/%{name}-%{version}.tar.gz
 BuildRequires:  golang >= %{golang_version}
 
 # If go_arches not defined fall through to implicit golang archs
 %if 0%{?go_arches:1}
-ExclusiveArch:  %{go_arches} mips64el
+ExclusiveArch:  %{go_arches}
 %else
-ExclusiveArch:  x86_64 aarch64 ppc64le s390x mips64el
+ExclusiveArch:  x86_64 aarch64 ppc64le s390x
 %endif
 
 ### AUTO-BUNDLED-GEN-ENTRY-POINT
@@ -86,10 +80,6 @@ TODO
 %setup -q
 %endif
 
-# cs2c add
-%patch1 -p1
-# cs2c add end
-
 %build
 %if 0%{do_build}
 %if 0%{make_redistributable}
@@ -97,9 +87,6 @@ TODO
 %{os_git_vars} make build-cross
 %else
 # Create Binaries only for building arch
-%ifarch mips64el
-  BUILD_PLATFORM="linux/mips64le"
-%endif
 %ifarch x86_64
   BUILD_PLATFORM="linux/amd64"
 %endif
@@ -139,9 +126,5 @@ done
 %pre
 
 %changelog
-* Thu Aug 30 2018 Dapeng <kunpeng.wu@cs2c.com.cn> - 3.9.0-1.01
-- Pack version v3.9.0.
-- Fix SPEC for mips64el.
-
 * Mon Nov 06 2017 Anonymous <anon@nowhere.com> 0.0.1
 - Initial example of spec.
