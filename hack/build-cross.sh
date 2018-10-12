@@ -8,14 +8,17 @@ host_platform="$(os::build::host_platform)"
 
 # by default, build for these platforms
 platforms=(
-  linux/amd64
-  darwin/amd64
-  windows/amd64
+  linux/mips64le
 )
 image_platforms=( )
 test_platforms=( "${host_platform}" )
 
 targets=( "${OS_CROSS_COMPILE_TARGETS[@]}" )
+
+# Special case mips64el
+if [[ "${host_platform}" == "linux/mipe64le" ]]; then
+  platforms+=( "linux/mips64le" )
+fi
 
 # Special case ppc64le
 if [[ "${host_platform}" == "linux/ppc64le" ]]; then
